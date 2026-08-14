@@ -1,4 +1,11 @@
-export const SITE_URL = 'https://inauguracion.plotcenter.com.ar';
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000')
+).replace(/\/$/, '');
 
 /** Fecha y hora del evento (zona Argentina). Única fuente de verdad. */
 export const EVENT_ISO = '2026-08-21T19:00:00-03:00';
