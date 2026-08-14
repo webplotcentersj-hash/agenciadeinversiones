@@ -8,6 +8,23 @@ import { fireConfetti } from '@/lib/confetti';
 import { confirmRsvp, readGuestId } from '@/lib/rsvp';
 
 const RSVP_KEY = 'inviteRsvpConfirmed';
+const WA_KEY = 'inviteRsvpWhatsapp';
+
+function readStoredWhatsapp(): string {
+  try {
+    return sessionStorage.getItem(WA_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function alreadyConfirmed(): boolean {
+  try {
+    return sessionStorage.getItem(RSVP_KEY) === '1' && readStoredWhatsapp().replace(/\D/g, '').length >= 8;
+  } catch {
+    return false;
+  }
+}
 
 const CHART_BOTTOM: [number, number][] = [
   [0, 348],
@@ -118,14 +135,6 @@ function ChartGraphic({
   );
 }
 
-function alreadyConfirmed(): boolean {
-  try {
-    return sessionStorage.getItem(RSVP_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
 function firstName(full: string): string {
   const part = full.trim().split(/\s+/)[0];
   return part || '';
@@ -135,7 +144,7 @@ function firstName(full: string): string {
 export default function RsvpFinale({ guestName }: { guestName: string }) {
   const rootRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [whatsapp, setWhatsapp] = useState('');
+  const [whatsapp, setWhatsapp] = useState(readStoredWhatsapp);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [thanks, setThanks] = useState(alreadyConfirmed);
@@ -195,7 +204,7 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
       await confirmRsvp(id, whatsapp);
       try {
         sessionStorage.setItem(RSVP_KEY, '1');
-        sessionStorage.setItem('inviteRsvpWhatsapp', digits);
+        sessionStorage.setItem(WA_KEY, digits);
       } catch {
         /* sessionStorage puede fallar en modo privado */
       }
@@ -263,9 +272,17 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
-                  placeholder="WhatsApp"
+                  placeholder="Tu WhatsApp"
                   value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setWhatsapp(value);
+                    try {
+                      sessionStorage.setItem(WA_KEY, value);
+                    } catch {
+                      /* sessionStorage puede fallar en modo privado */
+                    }
+                  }}
                   className="w-full input-glass rounded-xl pl-12 pr-4 py-3.5 text-base"
                 />
               </div>
