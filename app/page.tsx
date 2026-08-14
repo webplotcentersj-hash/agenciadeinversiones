@@ -26,6 +26,8 @@ const FLOW_SECTIONS = EVENT_HAS_DATE ? 4 : 3;
 export default function Page() {
   const [tipo, setTipo] = useState<InviteTipo>('GENERAL');
   const [guestName, setGuestName] = useState('');
+  const [guestId, setGuestId] = useState('');
+  const [rsvpConfirmed, setRsvpConfirmed] = useState(false);
   const [phase, setPhase] = useState<Phase>('gate');
   const [introDone, setIntroDone] = useState(false);
   const [dustActive, setDustActive] = useState(false);
@@ -57,6 +59,7 @@ export default function Page() {
   const handleOpen = useCallback(async (nombre: string) => {
     const currentTipo = readInviteTipo(window.location.search);
     const guest = await openRsvp(nombre, currentTipo);
+    setGuestId(guest.id);
     writeGuestId(guest.id);
     setGuestName(nombre);
     setPhase('envelope');
@@ -137,7 +140,14 @@ export default function Page() {
         />
       </main>
 
-      {revealed && rsvpReady && <RsvpFinale guestName={guestName} />}
+      {revealed && rsvpReady && (
+        <RsvpFinale
+          guestName={guestName}
+          guestId={guestId}
+          confirmed={rsvpConfirmed}
+          onConfirmed={() => setRsvpConfirmed(true)}
+        />
+      )}
 
       {revealed && <Ticker />}
 

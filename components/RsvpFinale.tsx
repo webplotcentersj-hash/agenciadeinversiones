@@ -5,26 +5,7 @@ import BrandLockup from '@/components/BrandLockup';
 import { EVENT } from '@/lib/event';
 import { animate, prefersReducedMotion } from '@/lib/anime';
 import { fireConfetti } from '@/lib/confetti';
-import { confirmRsvp, readGuestId } from '@/lib/rsvp';
-
-const RSVP_KEY = 'inviteRsvpConfirmed';
-const WA_KEY = 'inviteRsvpWhatsapp';
-
-function readStoredWhatsapp(): string {
-  try {
-    return sessionStorage.getItem(WA_KEY) || '';
-  } catch {
-    return '';
-  }
-}
-
-function alreadyConfirmed(): boolean {
-  try {
-    return sessionStorage.getItem(RSVP_KEY) === '1' && readStoredWhatsapp().replace(/\D/g, '').length >= 8;
-  } catch {
-    return false;
-  }
-}
+import { confirmRsvp } from '@/lib/rsvp';
 
 const CHART_BOTTOM: [number, number][] = [
   [0, 348],
@@ -141,13 +122,22 @@ function firstName(full: string): string {
 }
 
 /** Cierre: aparece recién después de la última agencia. */
-export default function RsvpFinale({ guestName }: { guestName: string }) {
+export default function RsvpFinale({
+  guestName,
+  guestId,
+  confirmed,
+  onConfirmed,
+}: {
+  guestName: string;
+  guestId: string;
+  confirmed: boolean;
+  onConfirmed: () => void;
+}) {
   const rootRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [whatsapp, setWhatsapp] = useState(readStoredWhatsapp);
+  const [whatsapp, setWhatsapp] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [thanks, setThanks] = useState(alreadyConfirmed);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -192,7 +182,7 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
       return;
     }
 
-    const id = readGuestId();
+    const id = guestId.trim();
     if (!id) {
       setError('Recargá la invitación e ingresá tu nombre primero');
       return;
@@ -202,19 +192,13 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
     setBusy(true);
     try {
       await confirmRsvp(id, whatsapp);
-      try {
-        sessionStorage.setItem(RSVP_KEY, '1');
-        sessionStorage.setItem(WA_KEY, digits);
-      } catch {
-        /* sessionStorage puede fallar en modo privado */
-      }
       const rect = cardRef.current?.getBoundingClientRect();
       fireConfetti(
         rect ? rect.left + rect.width / 2 : window.innerWidth / 2,
         rect ? rect.top + 40 : window.innerHeight * 0.55,
         90
       );
-      setThanks(true);
+      onConfirmed();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo confirmar');
     } finally {
@@ -228,7 +212,7 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
     <section
       ref={rootRef}
       id="rsvp-finale"
-      className={`rsvp-finale${thanks ? ' is-thanks' : ''}`}
+      className={`rsvp-finale${confirmed ? ' is-thanks' : ''}`}
       aria-labelledby="rsvp-title"
     >
       <div className="rsvp-finale__bg" aria-hidden="true">
@@ -238,7 +222,7 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
       </div>
 
       <div className="rsvp-finale__card" ref={cardRef}>
-        {thanks ? (
+        {confirmed ? (
           <div className="rsvp-thanks">
             <p className="rsvp-thanks__kicker">Confirmado</p>
             <h2 id="rsvp-title" className="rsvp-thanks__title">
@@ -274,15 +258,7 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
                   autoComplete="tel"
                   placeholder="Tu WhatsApp"
                   value={whatsapp}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setWhatsapp(value);
-                    try {
-                      sessionStorage.setItem(WA_KEY, value);
-                    } catch {
-                      /* sessionStorage puede fallar en modo privado */
-                    }
-                  }}
+                  onChange={(e) => setWhatsapp(e.target.value)}
                   className="w-full input-glass rounded-xl pl-12 pr-4 py-3.5 text-base"
                 />
               </div>

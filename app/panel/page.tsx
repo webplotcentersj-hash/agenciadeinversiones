@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import BrandLockup from '@/components/BrandLockup';
+import { downloadConfirmedPdf } from '@/lib/confirmed-pdf';
 import { getSupabase, type RsvpRow } from '@/lib/supabase';
 import './panel.css';
 
 type Filtro = 'todos' | 'abiertos' | 'confirmados';
-type TipoFiltro = 'todos' | 'GENERAL' | 'DISENO';
 
 function formatWhen(iso: string | null) {
   if (!iso) return '—';
@@ -36,7 +36,6 @@ export default function PanelPage() {
   const [busy, setBusy] = useState(false);
   const [rows, setRows] = useState<RsvpRow[]>([]);
   const [filtro, setFiltro] = useState<Filtro>('todos');
-  const [tipo, setTipo] = useState<TipoFiltro>('todos');
 
   useEffect(() => {
     document.body.classList.remove(
@@ -89,15 +88,12 @@ export default function PanelPage() {
       total: rows.length,
       abiertos: rows.filter((r) => r.estado === 'abierto').length,
       confirmados: rows.filter((r) => r.estado === 'confirmado').length,
-      general: rows.filter((r) => r.tipo === 'GENERAL').length,
-      diseno: rows.filter((r) => r.tipo === 'DISENO').length,
     };
   }, [rows]);
 
   const visible = rows.filter((r) => {
     if (filtro === 'abiertos' && r.estado !== 'abierto') return false;
     if (filtro === 'confirmados' && r.estado !== 'confirmado') return false;
-    if (tipo !== 'todos' && r.tipo !== tipo) return false;
     return true;
   });
 
@@ -160,7 +156,7 @@ export default function PanelPage() {
     <div className="panel-shell">
       <header className="panel-head">
         <BrandLockup className="panel-head__logo" />
-        <div>
+        <div className="panel-head__title">
           <h1>Panel de invitados</h1>
           <p>{session.user.email}</p>
         </div>
@@ -181,12 +177,14 @@ export default function PanelPage() {
             {f}
           </button>
         ))}
-        <span className="panel-filters__sep" />
-        {(['todos', 'GENERAL', 'DISENO'] as const).map((t) => (
-          <button key={t} type="button" className={tipo === t ? 'is-on' : ''} onClick={() => setTipo(t)}>
-            {t === 'todos' ? 'todos los tipos' : t === 'DISENO' ? 'diseño' : 'general'}
-          </button>
-        ))}
+        <button
+          type="button"
+          className="panel-pdf"
+          disabled={stats.confirmados === 0}
+          onClick={() => downloadConfirmedPdf(rows)}
+        >
+          PDF confirmados
+        </button>
       </div>
 
       {error ? <p className="panel-error">{error}</p> : null}
