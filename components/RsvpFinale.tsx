@@ -229,7 +229,10 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
       </div>
 
       <div className="rsvp-finale__card" ref={cardRef}>
-        <BrandLockup className="rsvp-finale__logo" />
+        <div className="rsvp-finale__logo-halo">
+          <span className="rsvp-finale__logo-spin" aria-hidden="true" />
+          <BrandLockup className="rsvp-finale__logo" />
+        </div>
 
         {thanks ? (
           <div className="rsvp-thanks">

@@ -1,46 +1,56 @@
 import type { Metadata, Viewport } from 'next';
-import { BRAND, EVENT, EVENT_HAS_DATE, HEADLINE, SITE_URL } from '@/lib/event';
+import { BRAND, EVENT, HEADLINE, SITE_URL } from '@/lib/event';
 import './globals.css';
 
-// El motivo es la inauguración; el aniversario sólo acompaña al final.
-const description = EVENT_HAS_DATE
-  ? `${HEADLINE.sub}. ${BRAND.group} te invita el ${EVENT.day} de ${EVENT.monthLong} ${EVENT.year} · ${EVENT.time} · ${BRAND.street}, ${BRAND.city}. En el año de nuestros ${BRAND.yearsLabel}.`
-  : `${HEADLINE.sub}. ${BRAND.group} en ${BRAND.street}, ${BRAND.city}. Inversiones, automotores y construcciones.`;
-
-const ogDescription = EVENT_HAS_DATE
-  ? `${HEADLINE.sub}. ${EVENT.day} · ${EVENT.month.toUpperCase()} · ${EVENT.year} · ${EVENT.time} · ${BRAND.street}, ${BRAND.city}.`
-  : `${HEADLINE.sub}. ${BRAND.group} · ${BRAND.street}, ${BRAND.city}.`;
-
-const ogImage = '/og-image.jpg?v=2';
-const ogImageAlt = `${HEADLINE.main} — ${BRAND.group}`;
+const title = `Estás invitado a la inauguración — ${BRAND.group}`;
+const description =
+  `Te invitamos a inaugurar nuestro nuevo espacio. ${EVENT.weekday} ${EVENT.day} de ${EVENT.monthLong}, ${EVENT.time}, ${EVENT.address} ${EVENT.addressNumber}, ${BRAND.city}. ${BRAND.yearsLabel} de ${BRAND.group}.`;
+const ogTitle = `Estás invitado a la inauguración`;
+const ogDescription = `${EVENT.weekday} ${EVENT.day} de ${EVENT.monthLong} · ${EVENT.time} · ${EVENT.address} ${EVENT.addressNumber}, ${BRAND.city}`;
+const ogImageAlt = `${HEADLINE.main} de ${BRAND.group} — ${EVENT.weekday} ${EVENT.day} de ${EVENT.monthLong} ${EVENT.year}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: `${HEADLINE.main} — ${BRAND.group}`,
+  title,
   description,
+  applicationName: BRAND.group,
+  authors: [{ name: BRAND.group }],
+  creator: BRAND.group,
+  publisher: BRAND.group,
+  category: 'event',
+  keywords: [
+    'inauguración',
+    'Grupo Agencias',
+    'San Juan',
+    'Ignacio de la Roza',
+    '10 años',
+    'inversiones',
+    'automotores',
+    'construcciones',
+  ],
   alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
+  formatDetection: { telephone: false, email: false, address: false },
+  appleWebApp: {
+    capable: true,
+    title: BRAND.group,
+    statusBarStyle: 'black-translucent',
+  },
   openGraph: {
     type: 'website',
     locale: 'es_AR',
     siteName: BRAND.group,
     url: '/',
-    title: `${HEADLINE.main} — ${BRAND.group}`,
+    title: ogTitle,
     description: ogDescription,
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        type: 'image/jpeg',
-        alt: ogImageAlt,
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${HEADLINE.main} — ${BRAND.group}`,
+    title: ogTitle,
     description: ogDescription,
-    images: [ogImage],
+  },
+  other: {
+    'og:image:alt': ogImageAlt,
   },
 };
 

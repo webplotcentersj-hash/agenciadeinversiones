@@ -105,23 +105,14 @@ export default function PanelPage() {
     e.preventDefault();
     setError('');
     setBusy(true);
-    const { error: authError } = await getSupabase().auth.signInWithPassword({ email, password });
+    const raw = email.trim().toLowerCase();
+    const loginEmail = raw.includes('@') ? raw : `${raw}@plotcenterlab.com.ar`;
+    const { error: authError } = await getSupabase().auth.signInWithPassword({
+      email: loginEmail,
+      password,
+    });
     setBusy(false);
     if (authError) setError(authError.message);
-  }
-
-  async function handleSignup() {
-    setError('');
-    setBusy(true);
-    const { data, error: authError } = await getSupabase().auth.signUp({ email, password });
-    setBusy(false);
-    if (authError) {
-      setError(authError.message);
-      return;
-    }
-    if (!data.session) {
-      setError('Cuenta creada. Si pide confirmar el mail, activá el usuario en Authentication de AGDI y volvé a entrar.');
-    }
   }
 
   async function handleLogout() {
@@ -139,10 +130,10 @@ export default function PanelPage() {
           <BrandLockup className="panel-login__logo" />
           <h1>Panel de invitados</h1>
           <input
-            type="email"
+            type="text"
             required
             autoComplete="username"
-            placeholder="Email"
+            placeholder="agdi"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input-glass rounded-xl px-4 py-3"
@@ -159,14 +150,6 @@ export default function PanelPage() {
           {error ? <p className="panel-error">{error}</p> : null}
           <button type="submit" disabled={busy} className="btn-interactive rounded-xl py-3 font-bold uppercase tracking-[0.14em] text-sm">
             {busy ? 'Entrando…' : 'Entrar'}
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={handleSignup}
-            className="panel-logout"
-          >
-            Crear cuenta
           </button>
         </form>
       </div>
