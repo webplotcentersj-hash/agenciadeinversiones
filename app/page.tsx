@@ -140,7 +140,7 @@ export default function Page() {
         />
       </main>
 
-      {revealed && rsvpReady && (
+      {rsvpReady && (
         <RsvpFinale
           guestName={guestName}
           guestId={guestId}

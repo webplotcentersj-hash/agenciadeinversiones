@@ -157,7 +157,7 @@ export default function RsvpFinale({
     const start = window.setTimeout(show, 60);
 
     if (card && !reduced) {
-      const anim = animate(card, {
+      animate(card, {
         opacity: 1,
         y: { from: 36 },
         scale: { from: 0.97 },
@@ -165,10 +165,6 @@ export default function RsvpFinale({
         ease: 'outExpo',
         delay: 280,
       });
-      return () => {
-        window.clearTimeout(start);
-        anim.revert();
-      };
     }
 
     return () => window.clearTimeout(start);
@@ -192,13 +188,15 @@ export default function RsvpFinale({
     setBusy(true);
     try {
       await confirmRsvp(id, whatsapp);
+      onConfirmed();
+      rootRef.current?.classList.add('is-in');
       const rect = cardRef.current?.getBoundingClientRect();
       fireConfetti(
         rect ? rect.left + rect.width / 2 : window.innerWidth / 2,
         rect ? rect.top + 40 : window.innerHeight * 0.55,
         90
       );
-      onConfirmed();
+      rootRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo confirmar');
     } finally {
@@ -212,7 +210,7 @@ export default function RsvpFinale({
     <section
       ref={rootRef}
       id="rsvp-finale"
-      className={`rsvp-finale${confirmed ? ' is-thanks' : ''}`}
+      className={`rsvp-finale${confirmed ? ' is-thanks is-in' : ''}`}
       aria-labelledby="rsvp-title"
     >
       <div className="rsvp-finale__bg" aria-hidden="true">

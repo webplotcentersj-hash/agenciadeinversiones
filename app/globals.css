@@ -1625,7 +1625,8 @@ body.is-intro #dust-canvas {
     transform: translateY(28px);
     transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
 }
-.rsvp-finale.is-in {
+.rsvp-finale.is-in,
+.rsvp-finale.is-thanks {
     opacity: 1;
     transform: none;
 }
@@ -1733,6 +1734,10 @@ body.is-intro #dust-canvas {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     opacity: 0;
+}
+.rsvp-finale.is-in .rsvp-finale__card,
+.rsvp-finale.is-thanks .rsvp-finale__card {
+    opacity: 1;
 }
 .rsvp-finale__logo-halo {
     position: relative;
