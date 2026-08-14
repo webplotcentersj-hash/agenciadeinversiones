@@ -33,6 +33,7 @@ export const BRAND = {
   since: '2016',
   city: 'San Juan',
   street: 'Ignacio de la Roza',
+  maps: 'https://maps.app.goo.gl/HpxTWeWFZTBmwFTy8',
   /** Logo principal: blanco sobre transparente, pensado para fondo oscuro. */
   logo: { src: '/principal.png?v=3', width: 1600, height: 347 },
 } as const;

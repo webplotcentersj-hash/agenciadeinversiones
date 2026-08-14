@@ -1,13 +1,13 @@
 'use client';
 
-import { BRAND, mapsUrl } from '@/lib/event';
+import { BRAND } from '@/lib/event';
 
 /** Las tres agencias están sobre la misma calle. La tarjeta abre el mapa. */
 export default function LocationCard({ visible }: { visible: boolean }) {
   return (
     <a
       id="location-trigger"
-      href={mapsUrl(`${BRAND.street}, ${BRAND.city}, Argentina`)}
+      href={BRAND.maps}
       target="_blank"
       rel="noopener noreferrer"
       className={`flow-section reveal-stagger location-link w-full max-w-lg mx-auto mt-2 sm:mt-3 mb-1 sm:mb-3 text-center flex flex-col items-center${
