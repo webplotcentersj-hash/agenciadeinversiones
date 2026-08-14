@@ -229,11 +229,6 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
       </div>
 
       <div className="rsvp-finale__card" ref={cardRef}>
-        <div className="rsvp-finale__logo-halo">
-          <span className="rsvp-finale__logo-spin" aria-hidden="true" />
-          <BrandLockup className="rsvp-finale__logo" />
-        </div>
-
         {thanks ? (
           <div className="rsvp-thanks">
             <p className="rsvp-thanks__kicker">Confirmado</p>
@@ -241,9 +236,16 @@ export default function RsvpFinale({ guestName }: { guestName: string }) {
               Gracias{name ? `, ${name}` : ''}
             </h2>
             <p className="rsvp-thanks__msg">Te esperamos este viernes {EVENT.day}</p>
+            <div className="rsvp-finale__logo-halo">
+              <span className="rsvp-finale__logo-spin" aria-hidden="true" />
+              <BrandLockup className="rsvp-finale__logo" />
+            </div>
           </div>
         ) : (
           <>
+            <div className="rsvp-finale__logo-halo">
+              <BrandLockup className="rsvp-finale__logo" />
+            </div>
             <p className="rsvp-finale__kicker">Confirmación</p>
             <h2 id="rsvp-title" className="rsvp-finale__title">
               ¿Venís el viernes {EVENT.day}?

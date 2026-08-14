@@ -831,11 +831,11 @@ body.is-intro #dust-canvas {
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    margin: 0 auto var(--s-3);
-    padding: 0.3rem 0.85rem 0.3rem 0.5rem;
+    gap: 0.6rem;
+    margin: 0 auto var(--s-4);
+    padding: 0.45rem 1.2rem 0.45rem 0.55rem;
     border-radius: var(--r-full);
-    background: rgba(255, 245, 242, 0.1);
+    background: rgba(255, 245, 242, 0.12);
     border: 1px solid var(--line-2);
     opacity: 0; /* la entrada la maneja anime.js */
 }
@@ -843,21 +843,21 @@ body.is-intro #dust-canvas {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 2.1rem;
+    height: 2.1rem;
     border-radius: 50%;
     background: var(--red-1);
     color: var(--paper);
     font-family: var(--font-brand);
-    font-size: 0.72rem;
+    font-size: 1.05rem;
     font-weight: 700;
 }
 .hero-badge__text {
-    font-size: 0.56rem;
+    font-size: 0.82rem;
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--ink-2);
+    color: var(--ink);
 }
 
 /* "Inauguración" es más larga que el titular anterior: entra en una línea
@@ -1016,36 +1016,79 @@ body.is-intro #dust-canvas {
 }
 .envelope.is-flap-back .envelope__flap { z-index: 1; }
 
-/* Lacre: el punto que se toca */
+/* Lacre de cera: irregular, hundido, con el 21/8 grabado */
 .envelope__seal {
     position: absolute;
     left: 50%;
     top: 62%;
     z-index: 5;
-    width: 3.4rem;
-    height: 3.4rem;
-    margin: -1.7rem 0 0 -1.7rem;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: -2.75rem 0 0 -2.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #e8484b 0%, var(--red-1) 45%, #8d1518 100%);
+    border-radius: 46% 54% 48% 52% / 52% 47% 53% 48%;
+    background:
+        radial-gradient(circle at 32% 26%, #ff8a86 0%, #e8484b 22%, var(--red-1) 52%, #6e1012 82%, #3d0809 100%);
     box-shadow:
-        0 6px 18px rgba(15, 4, 4, 0.5),
-        inset 0 2px 6px rgba(255, 255, 255, 0.28),
-        inset 0 -3px 8px rgba(15, 4, 4, 0.45);
+        0 10px 26px rgba(15, 4, 4, 0.55),
+        0 2px 0 1px #2a0607,
+        inset 0 5px 10px rgba(255, 220, 210, 0.38),
+        inset 0 -10px 16px rgba(20, 4, 4, 0.55);
     animation: seal-breathe 2.4s ease-in-out infinite;
 }
+.envelope__seal::before {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 42% 58% 47% 53% / 54% 44% 56% 46%;
+    background:
+        radial-gradient(circle at 40% 30%, #c61014 0%, #8d1518 58%, #4a0c0d 100%);
+    box-shadow:
+        0 8px 16px rgba(15, 4, 4, 0.4),
+        inset 0 1px 0 rgba(255, 180, 170, 0.18);
+    z-index: -1;
+}
+.envelope__seal::after {
+    content: '';
+    position: absolute;
+    inset: 0.62rem;
+    border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+    border: 1.5px solid rgba(255, 245, 242, 0.32);
+    box-shadow:
+        inset 0 1px 3px rgba(15, 4, 4, 0.4),
+        0 0 0 1px rgba(15, 4, 4, 0.22);
+    pointer-events: none;
+}
 .envelope__seal-num {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.04em;
     font-family: var(--font-brand);
-    font-size: 1.15rem;
     font-weight: 700;
     color: var(--paper);
-    text-shadow: 0 1px 3px rgba(15, 4, 4, 0.6);
+    line-height: 1;
+    text-shadow:
+        0 1px 0 rgba(255, 245, 242, 0.28),
+        0 2px 5px rgba(15, 4, 4, 0.7);
+}
+.envelope__seal-day,
+.envelope__seal-mo {
+    font-size: 1.55rem;
+    letter-spacing: -0.04em;
+}
+.envelope__seal-slash {
+    font-size: 1.15rem;
+    opacity: 0.88;
+    transform: translateY(-0.08em);
 }
 @keyframes seal-breathe {
-    0%, 100% { transform: scale(1); box-shadow: 0 6px 18px rgba(15, 4, 4, 0.5), 0 0 0 0 rgba(255, 154, 147, 0.5); }
-    70%      { transform: scale(1.06); box-shadow: 0 6px 18px rgba(15, 4, 4, 0.5), 0 0 0 18px rgba(255, 154, 147, 0); }
+    0%, 100% { transform: scale(1); }
+    70%      { transform: scale(1.05); }
 }
 
 .envelope__hint {
@@ -1711,7 +1754,7 @@ body.is-intro #dust-canvas {
 .rsvp-finale.is-thanks .rsvp-finale__logo-halo {
     width: min(15.5rem, 78vw);
     height: min(15.5rem, 78vw);
-    margin: 0.2rem auto var(--s-5);
+    margin: var(--s-5) auto 0.15rem;
 }
 .rsvp-finale.is-thanks .rsvp-finale__logo-halo::after {
     content: '';

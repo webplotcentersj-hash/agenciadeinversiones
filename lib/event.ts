@@ -40,6 +40,7 @@ export const BRAND = {
 export const EVENT = {
   day: '21',
   month: 'Ago',
+  monthNum: '8',
   monthLong: 'agosto',
   year: '2026',
   time: '19:00 hs',

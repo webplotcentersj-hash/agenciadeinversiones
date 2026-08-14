@@ -98,7 +98,17 @@ export default function Envelope({ guestName, isOpen, onRequestOpen, onFinished 
         <span className="envelope__flap" aria-hidden="true" />
 
         <span className="envelope__seal" aria-hidden="true">
-          <span className="envelope__seal-num">{EVENT_HAS_DATE ? EVENT.day : BRAND.years}</span>
+          <span className="envelope__seal-num">
+            {EVENT_HAS_DATE ? (
+              <>
+                <span className="envelope__seal-day">{EVENT.day}</span>
+                <span className="envelope__seal-slash">/</span>
+                <span className="envelope__seal-mo">{EVENT.monthNum}</span>
+              </>
+            ) : (
+              BRAND.years
+            )}
+          </span>
         </span>
       </button>
 

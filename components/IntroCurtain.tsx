@@ -82,7 +82,7 @@ export default function IntroCurtain({ play, eyebrow, onRevealed, onFinished }: 
             onFinished();
           },
         },
-        '+=280'
+        '+=3280'
       );
 
     return () => {
