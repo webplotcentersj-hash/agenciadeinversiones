@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { fireConfetti } from '@/lib/confetti';
+import { celebrateReveal, fireConfetti } from '@/lib/confetti';
 import { createDrawable, createTimeline, prefersReducedMotion, stagger, target } from '@/lib/anime';
 import AgencyOrbit from '@/components/AgencyOrbit';
 import BrandLockup from '@/components/BrandLockup';
@@ -41,6 +41,7 @@ export default function IntroCurtain({ play, eyebrow, onRevealed, onFinished }: 
     const circle = root.querySelector<SVGGeometryElement>('.intro-reveal__draw circle');
     const drawable = circle ? createDrawable(circle) : [];
 
+    const stopFireworks = celebrateReveal();
     const tl = createTimeline({ defaults: { ease: 'outExpo' } });
 
     tl.add(logoEl, { opacity: 1, y: { from: 22 }, duration: 620 }, 0)
@@ -73,7 +74,7 @@ export default function IntroCurtain({ play, eyebrow, onRevealed, onFinished }: 
           onBegin: () => {
             const cx = window.innerWidth / 2;
             const cy = window.innerHeight / 2;
-            fireConfetti(cx, cy, 90);
+            fireConfetti(cx, cy, 160, { fade: 0.0032 });
             if (navigator.vibrate) navigator.vibrate(30);
             onRevealed();
           },
@@ -86,6 +87,7 @@ export default function IntroCurtain({ play, eyebrow, onRevealed, onFinished }: 
       );
 
     return () => {
+      stopFireworks();
       tl.revert();
     };
   }, [play, onRevealed, onFinished]);

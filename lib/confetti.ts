@@ -121,25 +121,25 @@ export function attachConfetti(canvas: HTMLCanvasElement) {
   };
 }
 
-export function fireConfetti(x: number, y: number, amount = 70) {
-  for (let i = 0; i < amount; i++) particles.push(new Particle(x, y, true));
+export function fireConfetti(x: number, y: number, amount = 70, opts: ParticleOpts = {}) {
+  for (let i = 0; i < amount; i++) particles.push(new Particle(x, y, true, opts));
 }
 
 export function explodeFirework(x: number, y: number, power = 0.85) {
-  const count = Math.floor(36 * power + Math.random() * 18);
+  const count = Math.floor(52 * power + Math.random() * 28);
   const base = COLORS[Math.floor(Math.random() * COLORS.length)];
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + Math.random() * 0.2;
-    const speed = (2.5 + Math.random() * 5) * power;
+    const speed = (2.6 + Math.random() * 5.4) * power;
     particles.push(
       new Particle(x, y, true, {
         kind: 'spark',
         shape: 'circle',
-        r: 1.2 + Math.random() * 2,
+        r: 1.3 + Math.random() * 2.2,
         dx: Math.cos(angle) * speed,
         dy: Math.sin(angle) * speed,
-        gravity: 0.04 + Math.random() * 0.05,
-        fade: 0.01 + Math.random() * 0.01,
+        gravity: 0.035 + Math.random() * 0.045,
+        fade: 0.006 + Math.random() * 0.005,
         color: Math.random() > 0.35 ? base : COLORS[Math.floor(Math.random() * COLORS.length)],
       })
     );
@@ -193,4 +193,42 @@ export function celebrateCut(cx: number, cy: number) {
     explodeFirework(w * 0.72, h * 0.28, 0.95);
   }, 280);
   if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+}
+
+/** Fuegos del sello: más cantidad y una oleada extra ~2s después. */
+export function celebrateReveal(): () => void {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const cx = w / 2;
+  const cy = h * 0.42;
+  const linger = { fade: 0.0032 };
+
+  fireConfetti(cx, cy, 200, linger);
+  fireConfetti(cx - w * 0.24, cy, 110, linger);
+  fireConfetti(cx + w * 0.24, cy, 110, linger);
+  launchFirework(w * 0.2, h * 0.98, h * 0.16);
+  launchFirework(w * 0.5, h * 0.98, h * 0.12);
+  launchFirework(w * 0.8, h * 0.98, h * 0.18);
+
+  const later = window.setTimeout(() => {
+    explodeFirework(w * 0.26, h * 0.26, 1.2);
+    explodeFirework(w * 0.74, h * 0.24, 1.2);
+    launchFirework(w * 0.35, h * 0.98, h * 0.15);
+    launchFirework(w * 0.65, h * 0.98, h * 0.17);
+  }, 650);
+
+  const encore = window.setTimeout(() => {
+    explodeFirework(w * 0.18, h * 0.3, 1.1);
+    explodeFirework(w * 0.5, h * 0.2, 1.25);
+    explodeFirework(w * 0.82, h * 0.28, 1.1);
+    fireConfetti(cx, cy, 140, linger);
+    launchFirework(w * 0.28, h * 0.98, h * 0.18);
+    launchFirework(w * 0.5, h * 0.98, h * 0.14);
+    launchFirework(w * 0.72, h * 0.98, h * 0.2);
+  }, 2000);
+
+  return () => {
+    window.clearTimeout(later);
+    window.clearTimeout(encore);
+  };
 }
