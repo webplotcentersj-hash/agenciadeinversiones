@@ -1,0 +1,1845 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==================================================================
+   INVITACIÓN — GRUPO AGENCIAS · INAUGURACIÓN
+   ------------------------------------------------------------------
+   El motivo es la INAUGURACIÓN del nuevo espacio. Los 10 años son
+   secundarios: viven en la pastilla del hero y en la franja de años,
+   nunca en el titular.
+
+   Paleta: SÓLO el gradiente rojo institucional y neutros.
+     #C61014 (rojo claro, arriba) → #7C1011 (rojo medio, centro)
+     → #311413 (sombra, abajo)
+   Nada dorado y nada verde. Los acentos salen de aclarar el rojo
+   (#E8484B, #FF9A93) o de ir al papel (#FFF6F3).
+
+   La invitación es un sobre: se toca, la solapa se abre y sale la
+   carta. La tarjeta de fecha es ese papel; el resto de las tarjetas
+   son superficies oscuras para que el papel sea el foco.
+
+   Orden del archivo:
+     01. Tokens            06. Portada + sobre
+     02. Base              07. Contenido revelado
+     03. Fondo ambiente    08. Tarjetas (fecha, lugar, contador)
+     04. Gate de nombre    09. Agencias
+     05. Intro (sello)     10. Estados de página y reduced-motion
+   Cada bloque se define UNA vez. Si algo se ve mal, se corrige en su
+   sección: no se agregan capas de override al final.
+   ================================================================== */
+
+/* ==================================================================
+   01. TOKENS
+   ================================================================== */
+:root {
+    /* Tipografías */
+    --font-brand: 'Fraunces', Georgia, serif;
+    --font-ui: 'Outfit', system-ui, sans-serif;
+
+    /* --- Paleta institucional ------------------------------------ */
+    --red-1: #c61014;   /* rojo claro  — arriba del gradiente */
+    --red-2: #7c1011;   /* rojo medio  — centro */
+    --red-3: #311413;   /* sombra      — abajo */
+
+    /* Derivados, todos dentro de la misma familia */
+    --red-hot: #e8484b;   /* rojo encendido: acentos y brillos */
+    --red-soft: #ff9a93;  /* rojo claro: textos de acento sobre oscuro */
+    --red-deep: #1d0c0b;  /* más hondo que la sombra: sombras y vetas */
+    --surface: #4a1a18;   /* superficie de tarjeta sobre el gradiente */
+    --surface-2: #5c211e; /* superficie elevada / hover */
+
+    /* Papel: la carta que sale del sobre */
+    --paper: #fff6f3;
+    --paper-2: #fbe7e1;
+
+    /* Tinta sobre oscuro */
+    --ink: #fff5f2;
+    --ink-2: rgba(255, 245, 242, 0.74);
+    --ink-3: rgba(255, 245, 242, 0.5);
+    --line: rgba(255, 245, 242, 0.14);
+    --line-2: rgba(255, 245, 242, 0.26);
+
+    /* Gradiente maestro: se reusa en fondo, gate e intro */
+    --grad-brand: linear-gradient(180deg, var(--red-1) 0%, var(--red-2) 46%, var(--red-3) 100%);
+
+    /* Radios */
+    --r-sm: 0.7rem;
+    --r-md: 1rem;
+    --r-lg: 1.35rem;
+    --r-xl: 1.75rem;
+    --r-full: 999px;
+
+    /* Elevación */
+    --sh-1: 0 2px 8px rgba(15, 4, 4, 0.3);
+    --sh-2: 0 4px 12px rgba(15, 4, 4, 0.32), 0 16px 36px rgba(15, 4, 4, 0.34);
+    --sh-3: 0 6px 16px rgba(15, 4, 4, 0.36), 0 28px 60px rgba(15, 4, 4, 0.46);
+
+    /* Ritmo vertical */
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-5: 1.5rem;
+    --s-6: 2rem;
+    --s-7: 3rem;
+
+    /* Curvas */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==================================================================
+   02. BASE
+   ================================================================== */
+body {
+    background-color: var(--red-2);
+    background-image: var(--grad-brand);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+}
+
+button, input, textarea, select {
+    font-family: var(--font-ui);
+    font-weight: 500;
+}
+
+.font-display {
+    font-family: var(--font-brand);
+    font-weight: 700;
+}
+
+/* Font Awesome no debe heredar la tipografía de UI */
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands {
+    font-family: "Font Awesome 6 Free";
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+.fa-solid, .fas { font-weight: 900; }
+.fa-regular, .far { font-weight: 400; }
+.fa-brands, .fab { font-family: "Font Awesome 6 Brands"; font-weight: 400; }
+
+/* --- Piezas compartidas ------------------------------------------ */
+
+/* Superficie estándar. Sólida a propósito: el vidrio con backdrop-filter
+   se caía en el build y además pesa en móviles viejos. */
+.location-card,
+.countdown-box,
+.agency-card,
+.name-gate__card,
+.event-live {
+    background-color: var(--surface);
+    background-image: linear-gradient(180deg, rgba(255, 245, 242, 0.07) 0%, transparent 45%);
+    border: 1px solid var(--line);
+    box-shadow: var(--sh-2);
+}
+
+.divider-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 154, 147, 0.6), transparent);
+}
+
+.section-connector {
+    width: 1px;
+    height: 1.75rem;
+    background: linear-gradient(180deg, transparent, rgba(255, 154, 147, 0.45), transparent);
+    margin: var(--s-1) auto;
+}
+
+/* Encabezado de sección: "El grupo", "Tiempo restante" */
+.agencies-heading,
+#flow-countdown h3 {
+    font-family: var(--font-ui);
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--s-4);
+}
+@media (min-width: 640px) {
+    .agencies-heading,
+    #flow-countdown h3 { font-size: 0.74rem; }
+}
+
+/* Logo de marca — PNG blanco sobre transparente. El ancho manda; el alto
+   sale del ratio, así que nunca se deforma. */
+.brand-lockup {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px rgba(15, 4, 4, 0.5));
+}
+/* Variante sólida: el PNG es blanco, así que sobre fondo claro se usa su
+   alfa como máscara y se pinta con currentColor. Sin esto, el logo sobre el
+   papel de la carta sería blanco sobre blanco — invisible. */
+.brand-lockup--solido {
+    display: block;
+    aspect-ratio: 1600 / 347;
+    background-color: currentColor;
+    -webkit-mask: url('/principal.png?v=3') center / contain no-repeat;
+    mask: url('/principal.png?v=3') center / contain no-repeat;
+}
+
+.brand-lockup--hero { width: clamp(10.5rem, 50vw, 16rem); }
+.name-gate__logo { width: clamp(10rem, 58vw, 13rem); }
+.intro-reveal__logo {
+    width: clamp(10rem, 55vw, 14rem);
+    margin-bottom: var(--s-5);
+    opacity: 0; /* la entrada la maneja anime.js */
+}
+
+/* Botón principal: papel sobre rojo, máximo contraste */
+.btn-interactive {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg, #ffffff 0%, var(--paper) 55%, var(--paper-2) 100%);
+    color: var(--red-2);
+    font-weight: 700;
+    box-shadow: 0 10px 26px rgba(15, 4, 4, 0.42);
+    transition: transform 0.3s var(--ease-soft), box-shadow 0.3s ease;
+}
+.btn-interactive::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(to right, transparent 0%, rgba(255, 154, 147, 0.5) 50%, transparent 100%);
+    transform: rotate(30deg) translateX(-150%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+@media (hover: hover) {
+    .btn-interactive:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(15, 4, 4, 0.5);
+    }
+    .btn-interactive:hover::after { transform: rotate(30deg) translateX(150%); }
+}
+.btn-interactive:active { transform: translateY(0) scale(0.99); }
+
+/* Campo de texto */
+.input-glass {
+    background: rgba(15, 4, 4, 0.32);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.input-glass::placeholder { color: var(--ink-3); }
+.input-glass:focus {
+    background: rgba(15, 4, 4, 0.46);
+    border-color: var(--red-soft);
+    box-shadow: 0 0 0 4px rgba(255, 154, 147, 0.18);
+    outline: none;
+}
+.name-gate .fa-user { color: #fff; }
+
+/* Ticker de palabras */
+.ticker {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    z-index: 12;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.ticker--compact {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1.4rem;
+    z-index: 4;
+}
+.ticker__track {
+    display: flex;
+    width: max-content;
+    gap: 1.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+}
+.ticker__track span {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+.ticker__track i {
+    display: inline-block;
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: var(--red-soft);
+}
+
+/* Franja "2016 — 10 años — 2026" */
+.decade-band {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    height: clamp(3.2rem, 9vw, 4.6rem);
+    font-family: var(--font-ui);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    flex-shrink: 0;
+}
+.decade-band span { font-variant-numeric: tabular-nums; }
+.decade-band em {
+    font-style: normal;
+    font-family: var(--font-brand);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+}
+.decade-band i {
+    display: block;
+    width: 2.4rem;
+    height: 1px;
+    background: rgba(255, 245, 242, 0.3);
+}
+.decade-band--top { mask-image: linear-gradient(to bottom, #000 45%, transparent); }
+.decade-band--bottom { mask-image: linear-gradient(to top, #000 45%, transparent); }
+
+/* Señal de scroll: sólo una flecha, sin pastilla ni texto. */
+.scroll-cue {
+    position: fixed;
+    left: 50%;
+    bottom: calc(0.9rem + env(safe-area-inset-bottom));
+    transform: translate(-50%, 8px);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+.scroll-cue.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+.scroll-cue__arrow {
+    font-size: 0.85rem;
+    color: var(--ink);
+    opacity: 0.55;
+    filter: drop-shadow(0 2px 6px rgba(15, 4, 4, 0.6));
+    animation: scroll-cue-bounce 2s ease-in-out infinite;
+}
+@keyframes scroll-cue-bounce {
+    0%, 100% { transform: translateY(-3px); opacity: 0.4; }
+    50%      { transform: translateY(3px); opacity: 0.85; }
+}
+
+/* ==================================================================
+   03. FONDO AMBIENTE
+   ================================================================== */
+.ambient-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+.bg-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.45;
+    mix-blend-mode: screen;
+    will-change: transform;
+    transition: transform 0.6s ease-out;
+}
+.bg-blob--glow {
+    width: min(70vw, 520px);
+    height: min(70vw, 520px);
+    background: var(--red-hot);
+    top: -8%;
+    left: -12%;
+    animation: blob-drift 18s ease-in-out infinite;
+}
+.bg-blob--deep {
+    width: min(60vw, 460px);
+    height: min(60vw, 460px);
+    background: #a3221f;
+    top: 28%;
+    right: -16%;
+    animation: blob-drift 22s ease-in-out infinite reverse;
+}
+.bg-blob--warm {
+    width: min(65vw, 500px);
+    height: min(65vw, 500px);
+    background: #7a2320;
+    bottom: -12%;
+    left: 22%;
+    animation: blob-drift 20s ease-in-out infinite -6s;
+}
+@keyframes blob-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%      { transform: translate(28px, -24px) scale(1.08); }
+    70%      { transform: translate(-18px, 16px) scale(0.94); }
+}
+.bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 245, 242, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 245, 242, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, #000 35%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 80%);
+}
+.bg-horizon {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 42%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 154, 147, 0.3), transparent);
+}
+#dust-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.7;
+}
+body.is-intro .ambient-bg,
+body.is-intro #dust-canvas {
+    opacity: 0;
+    transition: opacity 1.2s ease 0.8s;
+}
+
+/* --- Formas geométricas en loop (MotionField) --------------------- */
+.motion-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    opacity: 0.65;
+}
+.motion-field--page { z-index: 5; }
+.motion-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(255, 245, 242, 0.24);
+}
+.motion-ring--a { width: 9rem; height: 9rem; top: 8%; left: -1.5rem; }
+.motion-ring--b {
+    width: 6.5rem;
+    height: 6.5rem;
+    bottom: 12%;
+    right: -1rem;
+    border-color: rgba(255, 154, 147, 0.3);
+}
+.motion-dot {
+    position: absolute;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--red-soft);
+    opacity: 0.7;
+}
+.motion-dot--a { top: 22%; right: 12%; }
+.motion-dot--b { top: 58%; left: 10%; background: var(--ink); opacity: 0.45; }
+.motion-dot--c { bottom: 18%; left: 42%; background: var(--red-hot); }
+.motion-bar {
+    position: absolute;
+    height: 2px;
+    width: 2.8rem;
+    background: linear-gradient(90deg, transparent, var(--red-soft), transparent);
+}
+.motion-bar--a { top: 16%; right: 18%; transform: rotate(25deg); }
+.motion-bar--b {
+    bottom: 28%;
+    left: 14%;
+    transform: rotate(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 245, 242, 0.55), transparent);
+}
+.motion-plus {
+    position: absolute;
+    top: 36%;
+    right: 8%;
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--red-soft);
+    opacity: 0.5;
+}
+.motion-plus::before,
+.motion-plus::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.motion-plus::before { width: 100%; height: 2px; }
+.motion-plus::after { width: 2px; height: 100%; }
+.motion-sq {
+    position: absolute;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1.5px solid rgba(255, 245, 242, 0.35);
+    bottom: 22%;
+    right: 16%;
+}
+.motion-field--gate .motion-ring--a { top: 12%; left: 6%; }
+.motion-field--intro .motion-ring--b { top: 18%; right: 8%; bottom: auto; }
+
+/* --- Órbita de las tres agencias ---------------------------------- */
+.agency-orbit {
+    position: absolute;
+    inset: -1.35rem;
+    pointer-events: none;
+}
+.agency-orbit__item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.15rem;
+    height: 2.15rem;
+    margin: -1.075rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--paper);
+    background: var(--red-2);
+    border: 1px solid var(--line-2);
+    box-shadow: var(--sh-1);
+    opacity: 0;
+    transform: rotate(var(--a)) translate(6.15rem) rotate(calc(var(--a) * -1));
+}
+.agency-orbit__item--claro { color: var(--red-soft); }
+.agency-orbit__item--vivo { color: #f2585c; }
+.agency-orbit__item--palido { color: #ffd2cb; }
+
+/* ==================================================================
+   04. GATE DE NOMBRE
+   ================================================================== */
+.name-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--s-5);
+    overflow: hidden;
+    background-color: var(--red-2);
+    background-image: var(--grad-brand);
+}
+.name-gate.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+.name-gate__grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(255, 245, 242, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 245, 242, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+.name-gate__mesh {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(232, 72, 75, 0.4) 0%, transparent 58%),
+        radial-gradient(ellipse 50% 40% at 100% 90%, rgba(29, 12, 11, 0.65) 0%, transparent 55%);
+}
+.name-gate__blob {
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: screen;
+}
+.name-gate__blob--a {
+    width: 18rem;
+    height: 18rem;
+    background: var(--red-hot);
+    top: -4rem;
+    right: -3rem;
+    animation: blob-drift 14s ease-in-out infinite;
+}
+.name-gate__blob--b {
+    width: 16rem;
+    height: 16rem;
+    background: #93211e;
+    bottom: -3rem;
+    left: -4rem;
+    animation: blob-drift 16s ease-in-out infinite reverse;
+}
+.name-gate__card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 26rem;
+    text-align: center;
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-3);
+    opacity: 0; /* la entrada la maneja anime.js */
+}
+.name-gate__logo {
+    margin-bottom: var(--s-5);
+    margin-inline: auto;
+}
+.name-gate__title {
+    font-family: var(--font-brand);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    margin: 0 0 0.4rem;
+}
+.name-gate__subtitle {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    letter-spacing: 0.02em;
+    margin: 0 0 var(--s-5);
+}
+.name-gate__error {
+    color: #ffc0bb;
+    font-size: 0.85rem;
+    margin: 0 0 var(--s-3);
+    min-height: 1.2em;
+}
+.name-gate__error:empty { display: none; }
+
+@media (max-width: 639px) {
+    .name-gate { padding: var(--s-4); }
+    .name-gate__card {
+        max-width: 100%;
+        padding: var(--s-6) 1.35rem var(--s-5);
+    }
+    .name-gate__title { font-size: 1.7rem; }
+    .name-gate__subtitle { font-size: 0.95rem; }
+    #gate-nombre { font-size: 1.05rem; min-height: 3.4rem; }
+}
+
+/* ==================================================================
+   05. INTRO — sello "10 años"
+   ================================================================== */
+.intro-reveal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    overflow: hidden;
+    background-color: var(--red-2);
+    background-image: var(--grad-brand);
+}
+.intro-reveal.is-waiting { visibility: hidden; }
+.intro-reveal.is-complete { pointer-events: none; }
+.intro-reveal__mesh {
+    position: absolute;
+    inset: -20%;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(232, 72, 75, 0.5), transparent 44%),
+        radial-gradient(circle at 80% 70%, rgba(29, 12, 11, 0.6), transparent 42%);
+    animation: intro-mesh-breathe 4s ease-in-out infinite alternate;
+}
+@keyframes intro-mesh-breathe {
+    from { transform: scale(1); }
+    to   { transform: scale(1.08); }
+}
+.intro-reveal__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 245, 242, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 245, 242, 0.05) 1px, transparent 1px);
+    background-size: 36px 36px;
+}
+.intro-reveal__stage {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--s-6);
+}
+.intro-reveal__eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+    margin-bottom: var(--s-5);
+    opacity: 0;
+}
+.intro-reveal__stamp-wrap {
+    position: relative;
+    width: 10.5rem;
+    height: 10.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.intro-reveal__stamp-wrap .agency-orbit { inset: -2.1rem; }
+.intro-reveal__stamp-wrap .agency-orbit__item {
+    transform: rotate(var(--a)) translate(7.1rem) rotate(calc(var(--a) * -1));
+}
+.intro-reveal__draw {
+    position: absolute;
+    inset: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+    transform: rotate(-90deg);
+}
+.intro-reveal__draw circle {
+    stroke: #ff3d42;
+    stroke-width: 7;
+    stroke-linecap: round;
+    fill: none;
+    filter:
+        drop-shadow(0 0 4px #ff3d42)
+        drop-shadow(0 0 10px #e8484b)
+        drop-shadow(0 0 18px rgba(232, 72, 75, 0.85));
+}
+/* El sello es la única pieza de papel del intro: es el foco */
+.intro-reveal__stamp {
+    position: relative;
+    width: 10.5rem;
+    height: 10.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #ffffff 0%, var(--paper-2) 100%);
+    box-shadow: var(--sh-3), 0 0 70px rgba(255, 154, 147, 0.3);
+    opacity: 0;
+}
+.intro-reveal__stamp-num {
+    font-family: var(--font-brand);
+    font-size: 4.4rem;
+    font-weight: 700;
+    line-height: 0.85;
+    color: var(--red-1);
+}
+.intro-reveal__stamp-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--red-2);
+    margin-top: 0.35rem;
+    opacity: 0;
+}
+.intro-reveal__date {
+    margin-top: var(--s-5);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    opacity: 0;
+}
+
+/* ==================================================================
+   06. PORTADA + SOBRE
+   ================================================================== */
+.hero-spotlight {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(120vw, 900px);
+    height: 70%;
+    background: radial-gradient(ellipse at center, rgba(255, 154, 147, 0.16) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero-ghost {
+    position: absolute;
+    left: 50%;
+    top: 6%;
+    transform: translateX(-50%);
+    font-family: var(--font-brand);
+    font-size: clamp(8rem, 38vw, 16rem);
+    line-height: 0.75;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 245, 242, 0.14);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    opacity: 0;
+}
+.hero-today {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin: 0 auto var(--s-3);
+    padding: 0.3rem 0.9rem;
+    border-radius: var(--r-full);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--red-2);
+    background: var(--paper);
+    box-shadow: 0 4px 18px rgba(15, 4, 4, 0.4);
+}
+.hero-today__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--red-1);
+    animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.7); }
+}
+/* Sello del aniversario: acompaña, no compite con el titular. */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 auto var(--s-3);
+    padding: 0.3rem 0.85rem 0.3rem 0.5rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 245, 242, 0.1);
+    border: 1px solid var(--line-2);
+    opacity: 0; /* la entrada la maneja anime.js */
+}
+.hero-badge__num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    background: var(--red-1);
+    color: var(--paper);
+    font-family: var(--font-brand);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+.hero-badge__text {
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+}
+
+/* "Inauguración" es más larga que el titular anterior: entra en una línea
+   con un cuerpo algo menor y sin partirse. */
+.hero-title-1 {
+    font-size: clamp(1.9rem, 9.5vw, 4rem);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-shadow: 0 4px 28px rgba(15, 4, 4, 0.5);
+    text-wrap: balance;
+    opacity: 0;
+}
+#hero-tone {
+    font-size: clamp(0.95rem, 3.6vw, 1.15rem);
+    line-height: 1.45;
+    max-width: 26rem;
+    color: var(--ink-2);
+    font-weight: 500;
+    opacity: 0;
+}
+.brand-lockup--hero { margin-inline: auto; opacity: 0; }
+
+/* --- El sobre ------------------------------------------------------ */
+.envelope-stage {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0; /* la entrada la maneja anime.js */
+}
+
+.envelope {
+    position: relative;
+    width: clamp(15rem, 76vw, 22rem);
+    aspect-ratio: 1.5 / 1;
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    perspective: 1400px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.4s var(--ease-soft);
+}
+.envelope:disabled { cursor: default; }
+@media (hover: hover) {
+    .envelope:not(:disabled):hover { transform: translateY(-6px) scale(1.02); }
+}
+.envelope:not(:disabled):active { transform: translateY(-2px) scale(0.99); }
+
+/* Cuerpo trasero: el fondo del sobre */
+.envelope__back {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.4rem;
+    background: linear-gradient(165deg, #8d1518 0%, var(--red-2) 55%, #5e0d0e 100%);
+    box-shadow: var(--sh-3);
+}
+
+/* La carta: guardada entra justo en el sobre (nunca asoma por abajo) y al
+   abrirse sube ~70% de su alto, que es lo que deja ver el bloque de texto. */
+.envelope__letter {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 4%;
+    height: 96%;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 0.9rem;
+    border-radius: 0.35rem 0.35rem 0.15rem 0.15rem;
+    background: linear-gradient(175deg, #ffffff 0%, var(--paper) 45%, var(--paper-2) 100%);
+    box-shadow: 0 -6px 26px rgba(15, 4, 4, 0.3);
+}
+.envelope__letter-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    opacity: 0; /* la entrada la maneja anime.js */
+}
+/* El logo encabeza la carta, pintado en el rojo institucional. */
+.envelope__letter-logo {
+    width: 7.5rem;
+    color: var(--red-1);
+    margin-bottom: 0.6rem;
+}
+.envelope__letter-title {
+    font-family: var(--font-brand);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--red-1);
+    text-wrap: balance;
+}
+.envelope__letter-date {
+    margin-top: 0.55rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(198, 16, 20, 0.25);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--red-2);
+}
+
+/* Bolsillo delantero: tapa la carta cuando está guardada */
+.envelope__front {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: 0.4rem;
+    background: linear-gradient(170deg, var(--red-2) 0%, #6a0e0f 60%, #4d0b0c 100%);
+    /* Aletas laterales: arrancan en el borde superior (0), no a 22%. Así este
+       recorte es el complemento EXACTO del de la solapa y, con el sobre
+       cerrado, entre los dos tapan el rectángulo entero — sin cuñas por las
+       que se vea la carta. */
+    clip-path: polygon(0 0, 50% 62%, 100% 0, 100% 100%, 0 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 245, 242, 0.12);
+}
+.envelope__front::before,
+.envelope__front::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 52%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 245, 242, 0.06), transparent 60%);
+    pointer-events: none;
+}
+.envelope__front::before { left: 0; }
+.envelope__front::after { right: 0; }
+
+/* Solapa: gira hacia atrás sobre su borde superior */
+.envelope__flap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 62%;
+    z-index: 4;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    background: linear-gradient(180deg, #a5171a 0%, #8d1518 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-radius: 0.4rem 0.4rem 0 0;
+    /* Marca el pliegue: solapa y bolsillo son los dos rojos, sin esto el
+       borde en V se pierde. */
+    filter: drop-shadow(0 1px 0 rgba(255, 245, 242, 0.22));
+}
+.envelope.is-flap-back .envelope__flap { z-index: 1; }
+
+/* Lacre: el punto que se toca */
+.envelope__seal {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    z-index: 5;
+    width: 3.4rem;
+    height: 3.4rem;
+    margin: -1.7rem 0 0 -1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #e8484b 0%, var(--red-1) 45%, #8d1518 100%);
+    box-shadow:
+        0 6px 18px rgba(15, 4, 4, 0.5),
+        inset 0 2px 6px rgba(255, 255, 255, 0.28),
+        inset 0 -3px 8px rgba(15, 4, 4, 0.45);
+    animation: seal-breathe 2.4s ease-in-out infinite;
+}
+.envelope__seal-num {
+    font-family: var(--font-brand);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--paper);
+    text-shadow: 0 1px 3px rgba(15, 4, 4, 0.6);
+}
+@keyframes seal-breathe {
+    0%, 100% { transform: scale(1); box-shadow: 0 6px 18px rgba(15, 4, 4, 0.5), 0 0 0 0 rgba(255, 154, 147, 0.5); }
+    70%      { transform: scale(1.06); box-shadow: 0 6px 18px rgba(15, 4, 4, 0.5), 0 0 0 18px rgba(255, 154, 147, 0); }
+}
+
+.envelope__hint {
+    margin-top: var(--s-4);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    animation: hint-pulse 1.8s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+    0%, 100% { opacity: 0.65; transform: translateY(0); }
+    50%      { opacity: 1; transform: translateY(-2px); }
+}
+
+/* ==================================================================
+   07. CONTENIDO REVELADO
+   ================================================================== */
+#secret-content { perspective: 1000px; }
+
+.reveal-after-cut {
+    display: none;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s var(--ease-soft), transform 0.9s var(--ease-soft);
+    pointer-events: none;
+}
+.reveal-after-cut.is-revealed {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Cada sección entra como una carta que se reparte */
+.reveal-stagger {
+    opacity: 0;
+    transform: translateY(34px) rotateX(10deg) scale(0.97);
+    transform-origin: top center;
+    transition:
+        opacity 0.8s var(--ease-out),
+        transform 0.8s var(--ease-out);
+}
+.reveal-stagger.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ==================================================================
+   08. TARJETAS
+   ================================================================== */
+
+/* --- Tarjeta de fecha: ES el papel de la carta -------------------- */
+.glow-border-wrap {
+    position: relative;
+    padding: 3px;
+    border-radius: calc(var(--r-xl) + 3px);
+    background: linear-gradient(135deg, var(--red-hot), rgba(255, 154, 147, 0.35), var(--red-1), rgba(255, 245, 242, 0.4));
+    background-size: 300% 300%;
+    animation: border-flow 9s ease infinite;
+    box-shadow: 0 20px 50px rgba(15, 4, 4, 0.45);
+}
+@keyframes border-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+}
+.glow-border-wrap > .tilt-card {
+    border-radius: var(--r-xl);
+    margin: 0;
+}
+.tilt-card {
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    background: linear-gradient(170deg, #ffffff 0%, var(--paper) 48%, var(--paper-2) 100%);
+    color: var(--red-3);
+}
+.tilt-content { transform: translateZ(45px); }
+
+.corner-ornament {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: rgba(198, 16, 20, 0.3);
+    pointer-events: none;
+    z-index: 1;
+}
+.corner-ornament--tl { top: 12px; left: 12px; border-top: 2px solid; border-left: 2px solid; }
+.corner-ornament--tr { top: 12px; right: 12px; border-top: 2px solid; border-right: 2px solid; }
+.corner-ornament--bl { bottom: 12px; left: 12px; border-bottom: 2px solid; border-left: 2px solid; }
+.corner-ornament--br { bottom: 12px; right: 12px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.date-card__kicker { color: var(--red-hot); font-family: var(--font-brand); font-weight: 700; }
+.guest-name-line {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    color: var(--red-2);
+}
+.date-card__time {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    color: var(--red-2);
+}
+.date-card__day-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 7.5rem;
+    height: 7.5rem;
+    margin-bottom: 0.35rem;
+}
+.date-card__day-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(198, 16, 20, 0.2);
+    pointer-events: none;
+}
+.date-card__spin {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+        from 0deg,
+        rgba(198, 16, 20, 0.12) 0deg,
+        #ff3d42 48deg,
+        #fff6f3 78deg,
+        #ff3d42 112deg,
+        rgba(198, 16, 20, 0.12) 160deg,
+        rgba(198, 16, 20, 0.12) 360deg
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    filter:
+        drop-shadow(0 0 4px #ff3d42)
+        drop-shadow(0 0 10px rgba(232, 72, 75, 0.7));
+    animation: spin-slow 10s linear infinite;
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.date-card__day {
+    position: relative;
+    z-index: 1;
+    color: var(--red-1);
+    font-variant-numeric: tabular-nums;
+}
+.date-card__month { color: var(--red-2); }
+.date-card__year-pill {
+    background: var(--red-1);
+    border: 0;
+    box-shadow: 0 6px 16px rgba(198, 16, 20, 0.3);
+}
+.date-card__year-pill div { color: var(--paper); }
+
+/* --- Tarjeta de ubicación ------------------------------------------ */
+.location-link {
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    color: inherit;
+}
+.location-card {
+    border-radius: var(--r-lg);
+    padding: var(--s-4) 0.95rem;
+    transition: transform 0.35s var(--ease-soft), box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+}
+@media (min-width: 640px) {
+    .location-card { padding: var(--s-5) var(--s-4); border-radius: var(--r-xl); }
+}
+@media (hover: hover) {
+    .location-link:hover .location-card {
+        transform: translateY(-4px);
+        background-color: var(--surface-2);
+        border-color: var(--line-2);
+        box-shadow: var(--sh-3);
+    }
+    .location-link:hover .location-pin { animation: none; transform: scale(1.08); }
+}
+.location-link:active .location-card { transform: translateY(-1px); }
+.location-pin {
+    background: var(--red-1);
+    color: var(--paper);
+    box-shadow: 0 6px 18px rgba(198, 16, 20, 0.35);
+    animation: location-bounce 2.4s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+.location-pin i { color: var(--paper); }
+@keyframes location-bounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+}
+.location-card__street {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    color: var(--ink);
+}
+.location-card__chip {
+    color: var(--red-soft);
+    background: rgba(255, 154, 147, 0.12);
+    border: 1px solid rgba(255, 154, 147, 0.28);
+}
+
+/* --- Contador ------------------------------------------------------ */
+.countdown-box {
+    position: relative;
+    overflow: hidden;
+    padding: var(--s-3) 0.4rem;
+    transition: transform 0.3s var(--ease-soft), box-shadow 0.3s ease;
+}
+.countdown-num {
+    display: block;
+    font-size: clamp(2.1rem, 10vw, 5rem);
+    line-height: 1;
+    color: var(--ink);
+    text-shadow: 0 4px 20px rgba(15, 4, 4, 0.5);
+    font-variant-numeric: tabular-nums;
+}
+.countdown-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+}
+.countdown-colon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.75rem, 6vw, 3rem);
+    font-weight: 800;
+    color: rgba(255, 154, 147, 0.5);
+    padding-bottom: var(--s-4);
+    animation: colon-blink 1s step-end infinite;
+}
+@keyframes colon-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.2; }
+}
+@media (min-width: 640px) {
+    .countdown-box { padding: var(--s-5) var(--s-4); }
+    .countdown-num { font-size: clamp(2.75rem, 7vw, 5rem); }
+    .countdown-label { font-size: 0.78rem; letter-spacing: 0.18em; }
+}
+
+#flow-countdown.is-imminent h3 { color: var(--paper); }
+#flow-countdown.is-imminent .countdown-box--pulse {
+    border-color: rgba(255, 154, 147, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 154, 147, 0.16), var(--sh-2);
+}
+#flow-countdown.is-imminent .countdown-num { animation: imminent-glow 1.8s ease-in-out infinite; }
+@keyframes imminent-glow {
+    0%, 100% { text-shadow: 0 4px 20px rgba(15, 4, 4, 0.5); }
+    50%      { text-shadow: 0 0 26px rgba(255, 154, 147, 0.75); }
+}
+
+.event-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: var(--s-3) 1.35rem;
+    border-radius: var(--r-full);
+}
+.event-live__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--red-soft);
+    animation: live-ring 1.8s ease-out infinite;
+}
+@keyframes live-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 154, 147, 0.6); }
+    70%  { box-shadow: 0 0 0 0.7rem rgba(255, 154, 147, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 154, 147, 0); }
+}
+.event-live__text {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+}
+@media (max-width: 639px) {
+    .event-live { padding: 0.6rem 1.05rem; }
+    .event-live__text { font-size: 0.64rem; letter-spacing: 0.16em; }
+}
+
+/* ==================================================================
+   09. AGENCIAS
+   ================================================================== */
+.agencies-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding-bottom: var(--s-6);
+    /* Da profundidad real al rotateX de la entrada. */
+    perspective: 900px;
+    perspective-origin: center 40%;
+}
+
+/* Entrada inmersiva: cada tarjeta llega desde el fondo, desenfocada y
+   girada, y se endereza al entrar en pantalla. La dispara el
+   IntersectionObserver de Agencies.tsx, una tarjeta por vez. */
+.agency-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    padding: 1.25rem 1.25rem 1.3rem;
+    opacity: 0;
+    transform: translateY(72px) scale(0.9) rotateX(14deg);
+    transform-origin: center top;
+    filter: blur(7px);
+    transition:
+        opacity 0.85s var(--ease-out),
+        transform 1s var(--ease-out),
+        filter 0.85s var(--ease-out);
+}
+.agency-card.is-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+/* La barra de color se llena una vez que la tarjeta ya se acomodó. */
+.agency-card.is-in .agency-card__bar {
+    transform: scaleX(1);
+    transition: transform 0.8s var(--ease-out) 0.3s, box-shadow 0.35s ease, height 0.35s ease;
+}
+/* Halo interior: se enciende en hover. */
+.agency-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse 90% 80% at 50% -10%, color-mix(in srgb, var(--tone) 45%, transparent), transparent 62%);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 85%, #fff 15%);
+    transition: opacity 0.35s ease;
+}
+@media (hover: hover) {
+    .agency-card.is-in:hover {
+        transform: translateY(-4px);
+        background-color: var(--surface-2);
+        border-color: var(--tone);
+        box-shadow:
+            0 0 6px var(--tone),
+            0 0 18px color-mix(in srgb, var(--tone) 75%, transparent),
+            0 0 42px color-mix(in srgb, var(--tone) 45%, transparent),
+            0 12px 36px rgba(15, 4, 4, 0.45),
+            inset 0 0 22px color-mix(in srgb, var(--tone) 18%, transparent);
+        transition:
+            transform 0.35s var(--ease-soft),
+            box-shadow 0.35s ease,
+            background-color 0.35s ease,
+            border-color 0.35s ease;
+    }
+    .agency-card.is-in:hover::after { opacity: 1; }
+    .agency-card.is-in:hover .agency-card__bar {
+        height: 5px;
+        box-shadow: 0 0 10px var(--tone), 0 0 22px var(--tone);
+    }
+    .agency-card.is-in:hover .agency-card__logo {
+        filter: drop-shadow(0 0 10px color-mix(in srgb, var(--tone) 70%, transparent));
+    }
+    .agency-card.is-in:hover .agency-card__tagline,
+    .agency-card.is-in:hover .agency-card__services-label {
+        color: var(--ink);
+        text-shadow: 0 0 12px color-mix(in srgb, var(--tone) 80%, transparent);
+    }
+    .agency-card.is-in:hover .agency-card__services li::before {
+        box-shadow: 0 0 8px var(--tone), 0 0 14px var(--tone);
+    }
+    .agency-card.is-in:hover .agency-card__address {
+        box-shadow: 0 0 12px var(--tone), 0 0 24px color-mix(in srgb, var(--tone) 55%, transparent);
+    }
+}
+/* Tres pasos de claridad dentro del mismo rojo */
+.agency-card--claro  { --tone: #ff9a93; }
+.agency-card--vivo   { --tone: #f2585c; }
+.agency-card--palido { --tone: #ffd2cb; }
+
+.agency-card__bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 4px;
+    width: 100%;
+    background: var(--tone);
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+.agency-card__index {
+    position: absolute;
+    right: 0.8rem;
+    top: 0.4rem;
+    font-family: var(--font-brand);
+    font-size: 3.2rem;
+    line-height: 1;
+    color: rgba(255, 245, 242, 0.07);
+    pointer-events: none;
+}
+/* El nombre de la agencia ES su logo. El h4 queda por semántica. */
+.agency-card__name {
+    margin: 0 0 var(--s-4);
+    line-height: 0;
+}
+.agency-card__logo {
+    display: block;
+    width: auto;
+    height: 2.75rem;
+    max-width: calc(100% - 2.5rem);
+    object-fit: contain;
+    object-position: left center;
+    filter: drop-shadow(0 3px 10px rgba(15, 4, 4, 0.45));
+}
+.agency-card__tagline {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin: 0 0 var(--s-4);
+}
+.agency-card__services-label {
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--tone);
+    margin: 0 0 0.45rem;
+}
+.agency-card__services {
+    list-style: none;
+    margin: 0 0 var(--s-4);
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+}
+.agency-card__services li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: 0.79rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ink);
+}
+.agency-card__services li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 0.36rem;
+    height: 0.36rem;
+    border-radius: 50%;
+    background: var(--tone);
+}
+.agency-card__address {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--r-full);
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--red-3);
+    background: var(--tone);
+    transition: filter 0.25s ease, transform 0.25s ease;
+}
+.agency-card__address i { font-size: 0.7rem; }
+@media (hover: hover) {
+    .agency-card__address:hover { filter: brightness(1.08); transform: translateY(-1px); }
+}
+@media (max-width: 639px) {
+    .agency-card { padding: 1.1rem 1.05rem 1.15rem; border-radius: var(--r-md); }
+    .agency-card__logo { height: 2.35rem; }
+    .agency-card__tagline { font-size: 0.9rem; }
+    .agency-card__services li { font-size: 0.75rem; }
+    .agency-card__index { font-size: 2.8rem; }
+}
+
+/* ==================================================================
+   11. RSVP — cierre (aparece después de la última agencia)
+   ------------------------------------------------------------------
+   No ocupa lugar hasta que se monta. Fondo atmosférico: un gráfico
+   suave, anillos y luces. Nada de ticker ni pastillas.
+   ================================================================== */
+.rsvp-finale {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--s-6) 1.1rem calc(var(--s-7) + 1rem);
+    overflow: hidden;
+    background: linear-gradient(180deg, #1d0c0b 0%, #311413 52%, #1a0908 100%);
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.rsvp-finale.is-in {
+    opacity: 1;
+    transform: none;
+}
+.rsvp-finale__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+.rsvp-finale__wash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 100%, rgba(15, 4, 4, 0.45) 0%, transparent 52%);
+}
+.rsvp-finale__chart {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 42%;
+    opacity: 0;
+}
+.rsvp-finale__chart--bottom {
+    bottom: 0;
+    transform: translateY(12px);
+}
+.rsvp-finale__chart--top {
+    top: 0;
+    transform: translateY(-12px);
+}
+.rsvp-finale.is-in .rsvp-finale__chart--bottom {
+    opacity: 1;
+    transform: none;
+    transition: opacity 1.4s var(--ease-out) 0.35s, transform 1.4s var(--ease-out) 0.35s;
+}
+.rsvp-finale.is-in .rsvp-finale__chart--top {
+    opacity: 0.85;
+    transform: none;
+    transition: opacity 1.4s var(--ease-out) 0.15s, transform 1.4s var(--ease-out) 0.15s;
+}
+.rsvp-finale__line {
+    fill: none;
+    stroke: #ffb3ac;
+    stroke-width: 3;
+    stroke-linejoin: miter;
+    stroke-linecap: square;
+    stroke-dasharray: 1600;
+    stroke-dashoffset: 1600;
+    filter: drop-shadow(0 0 8px rgba(255, 154, 147, 0.55));
+}
+.rsvp-finale.is-in .rsvp-finale__line {
+    animation: rsvp-draw 2.2s var(--ease-out) 0.35s forwards;
+}
+.rsvp-finale.is-in .rsvp-finale__chart--top .rsvp-finale__line {
+    animation-delay: 0.15s;
+}
+.rsvp-grid {
+    stroke: rgba(255, 245, 242, 0.14);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
+.rsvp-grid--h { stroke-dasharray: 6 8; }
+.rsvp-grid--v { stroke: rgba(255, 245, 242, 0.07); }
+.rsvp-vol {
+    fill: rgba(255, 154, 147, 0.16);
+    transform-origin: bottom;
+}
+.rsvp-finale.is-in .rsvp-vol {
+    animation: rsvp-vol 0.9s var(--ease-out) 0.5s both;
+}
+.rsvp-dot {
+    fill: #fff6f3;
+    stroke: #e8484b;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+}
+.rsvp-finale.is-in .rsvp-dot {
+    animation: rsvp-dot 0.4s ease var(--d, 0.6s) forwards;
+}
+@keyframes rsvp-vol {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+}
+@keyframes rsvp-dot {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes rsvp-draw {
+    to { stroke-dashoffset: 0; }
+}
+.rsvp-finale__card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 26rem;
+    text-align: center;
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    border-radius: var(--r-xl);
+    background-color: rgba(49, 20, 19, 0.72);
+    background-image: linear-gradient(180deg, rgba(255, 245, 242, 0.08) 0%, transparent 45%);
+    border: 1px solid rgba(255, 154, 147, 0.22);
+    box-shadow: var(--sh-3), 0 0 60px rgba(15, 4, 4, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+}
+.rsvp-finale__logo {
+    width: clamp(10rem, 58vw, 14rem);
+    margin: 0 auto var(--s-5);
+}
+.rsvp-finale__kicker,
+.rsvp-thanks__kicker {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+    margin: 0 0 0.45rem;
+}
+.rsvp-finale__title,
+.rsvp-thanks__title {
+    font-family: var(--font-brand);
+    font-size: clamp(1.55rem, 6vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 0 0 0.45rem;
+}
+.rsvp-finale__sub,
+.rsvp-thanks__msg {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    margin: 0 0 var(--s-5);
+    line-height: 1.4;
+}
+.rsvp-thanks__msg {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+}
+.rsvp-form {
+    display: grid;
+    gap: 0.85rem;
+    text-align: left;
+}
+.rsvp-form__error {
+    color: #ffc0bb;
+    font-size: 0.85rem;
+    margin: 0;
+}
+@media (max-width: 639px) {
+    .rsvp-finale { padding: var(--s-5) 0.9rem var(--s-6); }
+    .rsvp-finale__card { padding: var(--s-6) 1.2rem var(--s-5); }
+}
+
+/* ==================================================================
+   10. ESTADOS DE PÁGINA
+   ------------------------------------------------------------------
+   is-cut      → se tocó el sobre, la apertura está corriendo.
+   is-revealed → la carta ya salió: recién ahí se oculta la portada.
+   ================================================================== */
+
+/* ==================================================================
+   10. ESTADOS DE PÁGINA
+   ------------------------------------------------------------------
+   is-cut      → se tocó el sobre, la apertura está corriendo.
+   is-revealed → la carta ya salió: recién ahí se oculta la portada.
+   ================================================================== */
+.no-scroll { overflow: hidden; height: 100vh; }
+
+/* --- Portada: una sola pantalla, hasta que la carta sale ----------- */
+body.intro-revealed:not(.is-revealed) {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+body.intro-revealed:not(.is-revealed) .decade-band {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 20;
+    height: clamp(2.6rem, 7vh, 3.8rem);
+}
+body.intro-revealed:not(.is-revealed) .decade-band--bottom { margin-top: auto; z-index: 10; }
+body.intro-revealed:not(.is-revealed) #hero-section {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: var(--s-2) 0;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: visible;
+}
+body.intro-revealed:not(.is-revealed) .brand-lockup--hero { margin-bottom: var(--s-3); }
+/* El titular manda: tiene que pesar bastante más que la pastilla del
+   aniversario, que mide ~34px de alto. */
+body.intro-revealed:not(.is-revealed) .hero-title-1 {
+    font-size: clamp(2rem, 10vw, 3.25rem);
+    margin-bottom: 0.25rem;
+}
+body.intro-revealed:not(.is-revealed) #hero-tone {
+    font-size: clamp(0.7rem, 2.4vw, 0.88rem);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+body.intro-revealed:not(.is-revealed) .envelope {
+    width: clamp(14rem, 72vw, 20rem);
+}
+@media (min-width: 640px) {
+    body.intro-revealed:not(.is-revealed) .hero-title-1 { font-size: clamp(2.2rem, 5vw, 3.5rem); }
+}
+/* Pantallas bajas: se sacrifica la bajada para que el sobre entre entero */
+@media (max-height: 640px) {
+    body.intro-revealed:not(.is-revealed) .decade-band { height: clamp(2rem, 5.5vh, 2.8rem); }
+    body.intro-revealed:not(.is-revealed) #hero-tone { display: none; }
+    body.intro-revealed:not(.is-revealed) .brand-lockup--hero { width: clamp(8rem, 38vw, 11rem); }
+    body.intro-revealed:not(.is-revealed) .envelope { width: clamp(12rem, 58vw, 16rem); }
+}
+
+/* --- Carta afuera: flujo compacto hacia adelante ------------------- */
+body.is-revealed { min-height: 0; }
+body.is-revealed #hero-section { display: none; }
+body.is-revealed .decade-band--top { display: none; }
+body.is-revealed #secret-content {
+    position: relative;
+    z-index: 10;
+    flex-grow: 0;
+    justify-content: flex-start;
+    padding-top: var(--s-4);
+    padding-bottom: var(--s-5);
+    gap: 0;
+}
+body.is-revealed > .ticker { padding: var(--s-4) 0 var(--s-2); }
+
+@media (max-width: 639px) {
+    body.is-revealed #secret-content {
+        padding: var(--s-3) 0.85rem var(--s-4);
+        gap: var(--s-2);
+    }
+    body.is-revealed #secret-content .section-connector { display: none; }
+    body.is-revealed #flow-date { width: 100%; max-width: none; margin-inline: auto; }
+    body.is-revealed #secret-content .tilt-card { padding: 1.3rem 1.15rem 1.4rem; }
+    body.is-revealed #tilt-card .corner-ornament { width: 16px; height: 16px; }
+    body.is-revealed .date-card__day-wrap { width: 6.4rem; height: 6.4rem; }
+    body.is-revealed #location-trigger { margin: var(--s-2) 0; width: 100%; max-width: none; }
+    body.is-revealed #location-trigger .location-card {
+        width: 100%;
+        max-width: none;
+        padding: var(--s-4) 1.1rem;
+    }
+    body.is-revealed #flow-countdown { margin-top: var(--s-2); width: 100%; max-width: 24rem; }
+}
+
+/* ==================================================================
+   REDUCED MOTION — sin animaciones y sin elementos invisibles.
+   Los componentes salen temprano cuando esto está activo, así que
+   todo lo que arranca en opacity:0 tiene que resetearse acá.
+   ================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .brand-lockup--hero,
+    .hero-ghost,
+    .hero-title-1,
+    .hero-badge,
+    #hero-tone,
+    .envelope-stage,
+    .envelope__letter-inner,
+    .agency-orbit__item,
+    .agency-card,
+    .agency-card.is-in,
+    .name-gate__card,
+    .intro-reveal__logo,
+    .intro-reveal__eyebrow,
+    .intro-reveal__stamp,
+    .intro-reveal__stamp-label,
+    .intro-reveal__date,
+    .rsvp-finale,
+    .rsvp-finale__card,
+    .rsvp-finale__bg {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .agency-card { transform: none !important; filter: none !important; }
+    .agency-card__bar { transform: scaleX(1) !important; }
+    .reveal-stagger { transform: none; }
+}
