@@ -49,6 +49,8 @@ export const EVENT = {
   address: 'Ignacio de la Roza',
   addressNumber: '307 Oeste',
   addressShort: 'San Juan Capital',
+  venueLine: 'Av. Ig. de la Roza 307',
+  locality: 'Rivadavia',
   landmark: 'Frente al shopping Espacio San Juan',
 } as const;
 

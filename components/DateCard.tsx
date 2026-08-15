@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { EVENT, HEADLINE } from '@/lib/event';
+import { BRAND, EVENT } from '@/lib/event';
 import { animate, prefersReducedMotion } from '@/lib/anime';
 
 /** Tarjeta de fecha con efecto tilt 3D (mismo cálculo que el original: máx. 15°). */
@@ -67,28 +67,21 @@ export default function DateCard({ guestName, visible }: { guestName: string; vi
         <div className="absolute inset-0 bg-gradient-to-br from-brand-400/5 via-transparent to-brand-300/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
         <div className="tilt-content relative z-10">
-          <p className="font-display text-[11px] sm:text-xs tracking-[0.3em] uppercase mb-2 sm:mb-2 date-card__kicker">
-            {HEADLINE.main} · {EVENT.weekday}
+          <p className="font-display text-[11px] sm:text-xs tracking-[0.3em] uppercase mb-2 date-card__kicker">
+            Te invitamos a la inauguración
           </p>
           <p id="date-guest-name" className="guest-name-line text-lg sm:text-lg mb-2">
             {guestName}
           </p>
-          <div className="date-card__day-wrap">
-            <span className="date-card__spin" aria-hidden="true" />
-            <div className="date-card__day font-display text-6xl sm:text-7xl md:text-8xl font-black leading-none">
-              {EVENT.day}
-            </div>
-          </div>
-          <div className="date-card__month font-display text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-[0.22em] sm:tracking-[0.25em] leading-none mb-2.5 sm:mb-3">
-            {EVENT.month}
-          </div>
-          <div className="date-card__year-pill inline-block px-5 sm:px-6 py-1.5 sm:py-2 rounded-full">
-            <div className="font-display text-lg sm:text-2xl md:text-3xl font-bold tracking-[0.24em] sm:tracking-[0.3em]">
-              {EVENT.year}
-            </div>
-          </div>
-          <p className="date-card__time mt-2.5 sm:mt-3 font-display text-base tracking-[0.22em] sm:tracking-[0.25em] uppercase font-semibold">
-            {EVENT.time}
+          <p className="date-card__when">
+            {EVENT.weekday} {EVENT.day} de {EVENT.monthLong}
+          </p>
+          <p className="date-card__time mt-1.5 font-display text-base tracking-[0.22em] sm:tracking-[0.25em] uppercase font-semibold">
+            a las 19 hs
+          </p>
+          <p className="date-card__venue">
+            <span>en {EVENT.venueLine}</span>
+            <span>{EVENT.locality} · {BRAND.city}</span>
           </p>
         </div>
       </div>

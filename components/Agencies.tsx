@@ -96,23 +96,19 @@ export default function Agencies({
             </h4>
             <p className="agency-card__tagline">{agency.tagline}</p>
             {agency.id === 'automotores' && (
-              <span className="agency-card__inaugura">Inauguramos</span>
+              <>
+                <span className="agency-card__inaugura">Inauguramos</span>
+                <a
+                  className="agency-card__address"
+                  href={mapsUrl(agency.mapsQuery)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="fa-solid fa-location-dot" aria-hidden="true" />
+                  <span>{agency.address}</span>
+                </a>
+              </>
             )}
-            <p className="agency-card__services-label">Servicios</p>
-            <ul className="agency-card__services">
-              {agency.services.map((service) => (
-                <li key={service}>{service}</li>
-              ))}
-            </ul>
-            <a
-              className="agency-card__address"
-              href={mapsUrl(agency.mapsQuery)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-solid fa-location-dot" aria-hidden="true" />
-              <span>{agency.address}</span>
-            </a>
           </li>
         ))}
       </ul>
