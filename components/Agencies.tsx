@@ -79,9 +79,6 @@ export default function Agencies({
             }`}
             style={{ '--i': i } as React.CSSProperties}
           >
-            {agency.id === 'automotores' && (
-              <span className="agency-card__inaugura">Inauguramos</span>
-            )}
             <span className="agency-card__index" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
@@ -98,6 +95,9 @@ export default function Agencies({
               />
             </h4>
             <p className="agency-card__tagline">{agency.tagline}</p>
+            {agency.id === 'automotores' && (
+              <span className="agency-card__inaugura">Inauguramos</span>
+            )}
             <p className="agency-card__services-label">Servicios</p>
             <ul className="agency-card__services">
               {agency.services.map((service) => (

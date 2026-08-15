@@ -1310,17 +1310,116 @@ body.is-intro #dust-canvas {
     background: rgba(255, 154, 147, 0.12);
     border: 1px solid rgba(255, 154, 147, 0.28);
 }
-.location-card--meta {
-    padding: 0.7rem 0.85rem 0.85rem;
-}
-@media (min-width: 640px) {
-    .location-card--meta { padding: 0.85rem 1rem 1rem; }
-}
 .location-block {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0.85rem;
+}
+.location-decade {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 1.15rem 1rem 1.25rem;
+    border-radius: var(--r-xl);
+    text-align: center;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--red-hot) 38%, transparent), transparent 52%),
+        rgba(49, 20, 19, 0.55);
+    border: 1px solid color-mix(in srgb, var(--red-soft) 50%, transparent);
+    box-shadow:
+        0 0 0 1px rgba(198, 16, 20, 0.28),
+        0 0 28px color-mix(in srgb, var(--red-hot) 32%, transparent),
+        var(--sh-3);
+}
+.location-decade__kicker {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+}
+.location-decade__seal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 6.4rem;
+    height: 6.4rem;
+}
+.location-decade__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        rgba(198, 16, 20, 0.15) 0deg,
+        #ff8a86 70deg,
+        #fff6f3 95deg,
+        #ff3d42 140deg,
+        rgba(198, 16, 20, 0.15) 200deg,
+        rgba(198, 16, 20, 0.15) 360deg
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    filter:
+        drop-shadow(0 0 4px #ff3d42)
+        drop-shadow(0 0 14px rgba(232, 72, 75, 0.7));
+    animation: spin-slow 10s linear infinite;
+}
+.location-decade__seal strong {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-brand);
+    font-size: 2.55rem;
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-shadow:
+        0 0 12px color-mix(in srgb, var(--red-hot) 80%, transparent),
+        0 4px 16px rgba(15, 4, 4, 0.45);
+}
+.location-decade__seal em {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.1rem;
+    font-style: normal;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+}
+.location-decade__title {
+    font-family: var(--font-brand);
+    font-size: clamp(1.2rem, 4.8vw, 1.55rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 16px color-mix(in srgb, var(--red-hot) 50%, transparent);
+}
+.location-decade__range {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+}
+.location-decade__range i {
+    display: block;
+    width: 1.8rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 154, 147, 0.7), transparent);
 }
 .location-inaugura {
     margin: 0;
@@ -1386,38 +1485,11 @@ body.is-intro #dust-canvas {
         linear-gradient(180deg, rgba(198, 16, 20, 0.12) 0%, transparent 35%, rgba(29, 12, 11, 0.35) 100%);
     pointer-events: none;
 }
-.location-map__pin {
-    position: absolute;
-    left: 50%;
-    top: 38%;
-    z-index: 2;
-    width: 2.6rem;
-    height: 2.6rem;
-    margin: -2.2rem 0 0 -1.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50% 50% 50% 6px;
-    transform: rotate(-45deg);
-    background: radial-gradient(circle at 32% 28%, #ff8a86 0%, var(--red-1) 55%, #6e1012 100%);
-    box-shadow:
-        0 8px 20px rgba(15, 4, 4, 0.5),
-        0 0 16px color-mix(in srgb, var(--red-hot) 70%, transparent);
-    color: var(--paper);
-    animation: location-map-pin 1.8s ease-in-out infinite;
-}
-@keyframes location-map-pin {
-    0%, 100% { transform: rotate(-45deg) translateY(0); }
-    50%      { transform: rotate(-45deg) translateY(-5px); }
-}
-.location-map__pin i {
-    transform: rotate(45deg);
-    font-size: 1rem;
-}
 .location-map__badge {
     position: absolute;
     left: 50%;
-    top: 52%;
+    bottom: 0.85rem;
+    top: auto;
     z-index: 2;
     transform: translateX(-50%);
     display: flex;
@@ -1447,41 +1519,6 @@ body.is-intro #dust-canvas {
     text-transform: none;
     color: var(--ink);
     text-shadow: 0 0 12px color-mix(in srgb, var(--red-hot) 60%, transparent);
-}
-.location-legend {
-    margin: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0.65rem;
-    padding: 0.85rem 1rem;
-    border-radius: var(--r-lg);
-    background: rgba(198, 16, 20, 0.16);
-    border: 1px solid color-mix(in srgb, var(--red-soft) 45%, transparent);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--red-hot) 28%, transparent);
-    color: var(--ink);
-}
-.location-legend i {
-    margin-top: 0.2rem;
-    color: var(--red-soft);
-    font-size: 1rem;
-}
-.location-legend span {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    text-align: left;
-    font-size: 0.82rem;
-    color: var(--ink-2);
-}
-.location-legend strong {
-    font-family: var(--font-brand);
-    font-size: clamp(1rem, 4vw, 1.2rem);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: 0.01em;
-    color: var(--ink);
-    text-shadow: 0 0 12px color-mix(in srgb, var(--red-hot) 45%, transparent);
 }
 .location-map__hit {
     position: absolute;
@@ -1737,14 +1774,10 @@ body.is-intro #dust-canvas {
     color: rgba(255, 245, 242, 0.07);
     pointer-events: none;
 }
-.agency-card--inaugura {
-    padding-top: 2.35rem;
-}
 .agency-card__inaugura {
-    position: absolute;
-    top: 0.7rem;
-    right: 0.75rem;
-    z-index: 2;
+    display: inline-flex;
+    align-self: flex-start;
+    margin: 0 0 var(--s-4);
     padding: 0.28rem 0.7rem;
     border-radius: var(--r-full);
     background: var(--red-1);
