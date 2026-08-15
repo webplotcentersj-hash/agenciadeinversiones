@@ -42,7 +42,8 @@ export default function ScrollCue({ active }: { active: boolean }) {
 
   return (
     <div className={`scroll-cue${show ? ' is-visible' : ''}`} aria-hidden="true">
-      <i className="fa-solid fa-chevron-down scroll-cue__arrow" />
+      <span className="scroll-cue__ring" />
+      <i className="fa-solid fa-angles-down scroll-cue__arrow" />
     </div>
   );
 }

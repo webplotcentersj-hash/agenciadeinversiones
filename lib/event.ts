@@ -47,8 +47,9 @@ export const EVENT = {
   time: '19:00 hs',
   weekday: 'Viernes',
   address: 'Ignacio de la Roza',
-  addressNumber: '237 Oeste',
+  addressNumber: '307 Oeste',
   addressShort: 'San Juan Capital',
+  landmark: 'Frente al shopping Espacio San Juan',
 } as const;
 
 export type Agency = {
@@ -113,6 +114,10 @@ export const AGENCIES: Agency[] = [
 
 export function mapsUrl(query: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
+export function mapsEmbedUrl(query: string): string {
+  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=17&hl=es&output=embed`;
 }
 
 export type InviteTipo = 'GENERAL' | 'DISENO';

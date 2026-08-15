@@ -74,9 +74,14 @@ export default function Agencies({
         {AGENCIES.map((agency, i) => (
           <li
             key={agency.id}
-            className={`agency-card agency-card--${agency.tone}`}
+            className={`agency-card agency-card--${agency.tone}${
+              agency.id === 'automotores' ? ' agency-card--inaugura' : ''
+            }`}
             style={{ '--i': i } as React.CSSProperties}
           >
+            {agency.id === 'automotores' && (
+              <span className="agency-card__inaugura">Inauguramos</span>
+            )}
             <span className="agency-card__index" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
