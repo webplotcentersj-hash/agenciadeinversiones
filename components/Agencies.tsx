@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { AGENCIES, mapsUrl } from '@/lib/event';
+import { AGENCIES } from '@/lib/event';
 import { prefersReducedMotion } from '@/lib/anime';
 
-/** Las tres agencias del grupo, con servicios y dirección de cada una. */
+/** Las tres agencias del grupo: logo y slogan. */
 export default function Agencies({
   visible,
   onLastVisible,
@@ -74,9 +74,7 @@ export default function Agencies({
         {AGENCIES.map((agency, i) => (
           <li
             key={agency.id}
-            className={`agency-card agency-card--${agency.tone}${
-              agency.id === 'automotores' ? ' agency-card--inaugura' : ''
-            }`}
+            className={`agency-card agency-card--${agency.tone}`}
             style={{ '--i': i } as React.CSSProperties}
           >
             <span className="agency-card__index" aria-hidden="true">
@@ -95,20 +93,6 @@ export default function Agencies({
               />
             </h4>
             <p className="agency-card__tagline">{agency.tagline}</p>
-            {agency.id === 'automotores' && (
-              <>
-                <span className="agency-card__inaugura">Inauguramos</span>
-                <a
-                  className="agency-card__address"
-                  href={mapsUrl(agency.mapsQuery)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="fa-solid fa-location-dot" aria-hidden="true" />
-                  <span>{agency.address}</span>
-                </a>
-              </>
-            )}
           </li>
         ))}
       </ul>
