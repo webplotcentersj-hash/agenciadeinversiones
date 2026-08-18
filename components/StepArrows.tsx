@@ -28,12 +28,12 @@ export default function StepArrows({ remaining }: { remaining: number }) {
     >
       <div className="step-arrows__row" aria-hidden="true">
         {Array.from({ length: TOTAL }, (_, i) => (
-          <i
+          <span
             key={i}
-            className={`fa-solid fa-angles-down step-arrows__item${
-              i < remaining ? ' is-on' : ''
-            }`}
-          />
+            className={`step-arrows__item${i < remaining ? ' is-on' : ''}`}
+          >
+            <i className="fa-solid fa-angles-down" />
+          </span>
         ))}
       </div>
       <span className="step-arrows__count">
