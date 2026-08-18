@@ -41,9 +41,12 @@ export default function ScrollCue({ active }: { active: boolean }) {
   }, [active]);
 
   return (
-    <div className={`scroll-cue${show ? ' is-visible' : ''}`} aria-hidden="true">
-      <span className="scroll-cue__ring" />
-      <i className="fa-solid fa-angles-down scroll-cue__arrow" />
+    <div className={`scroll-cue${show ? ' is-visible' : ''}`}>
+      <span className="scroll-cue__icon" aria-hidden="true">
+        <span className="scroll-cue__ring" />
+        <i className="fa-solid fa-angles-down scroll-cue__arrow" />
+      </span>
+      <span className="scroll-cue__label">Bajar hasta el final</span>
     </div>
   );
 }
