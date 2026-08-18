@@ -395,6 +395,58 @@ button, input, textarea, select {
     50%      { transform: scale(1.08); opacity: 1; }
 }
 
+/* Contador de pasos: flechas neón arriba, de 5 de 6 hacia el cierre. */
+.step-arrows {
+    position: fixed;
+    top: calc(0.7rem + env(safe-area-inset-top));
+    left: 50%;
+    z-index: 270;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.28rem;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+.step-arrows__row {
+    display: flex;
+    align-items: center;
+    gap: 0.42rem;
+}
+.step-arrows__item {
+    font-size: 0.78rem;
+    color: rgba(255, 154, 147, 0.18);
+    filter: none;
+    transition: color 0.45s ease, filter 0.45s ease, transform 0.45s ease;
+}
+.step-arrows__item.is-on {
+    color: var(--red-soft);
+    filter:
+        drop-shadow(0 0 4px #ff3d42)
+        drop-shadow(0 0 10px color-mix(in srgb, var(--red-hot) 75%, transparent));
+    animation: step-arrows-glow 1.6s ease-in-out infinite;
+}
+.step-arrows__item.is-on:nth-child(1) { animation-delay: 0s; }
+.step-arrows__item.is-on:nth-child(2) { animation-delay: 0.12s; }
+.step-arrows__item.is-on:nth-child(3) { animation-delay: 0.24s; }
+.step-arrows__item.is-on:nth-child(4) { animation-delay: 0.36s; }
+.step-arrows__item.is-on:nth-child(5) { animation-delay: 0.48s; }
+.step-arrows__item.is-on:nth-child(6) { animation-delay: 0.6s; }
+@keyframes step-arrows-glow {
+    0%, 100% { transform: translateY(0); opacity: 0.85; }
+    50%      { transform: translateY(2px); opacity: 1; }
+}
+.step-arrows__count {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+    text-shadow:
+        0 0 8px color-mix(in srgb, var(--red-hot) 70%, transparent),
+        0 0 16px color-mix(in srgb, var(--red-hot) 40%, transparent);
+}
+
 /* ==================================================================
    03. FONDO AMBIENTE
    ================================================================== */

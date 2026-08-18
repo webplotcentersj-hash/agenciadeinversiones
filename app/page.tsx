@@ -13,6 +13,7 @@ import NameGate from '@/components/NameGate';
 import PatternBanner from '@/components/PatternBanner';
 import RsvpFinale from '@/components/RsvpFinale';
 import ScrollCue from '@/components/ScrollCue';
+import StepArrows, { remainingSteps } from '@/components/StepArrows';
 import Ticker from '@/components/Ticker';
 import { EVENT_HAS_DATE, TONE, readInviteTipo, type InviteTipo } from '@/lib/event';
 import { openRsvp, writeGuestId } from '@/lib/rsvp';
@@ -152,6 +153,8 @@ export default function Page() {
       {revealed && <Ticker />}
 
       <PatternBanner position="bottom" />
+
+      <StepArrows remaining={remainingSteps(phase, rsvpReady, rsvpConfirmed)} />
 
       <ScrollCue active={revealed} />
     </>
