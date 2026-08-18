@@ -25,6 +25,7 @@ export default function Agencies({
 
     const cards = Array.from(root.querySelectorAll<HTMLElement>('.agency-card'));
     const last = cards[cards.length - 1];
+    if (!last) return;
 
     const markLast = () => {
       if (toldLast.current) return;
@@ -32,9 +33,13 @@ export default function Agencies({
       onLastVisible?.();
     };
 
+    const reveal = (el: HTMLElement) => {
+      el.classList.add('is-in');
+      if (el === last) markLast();
+    };
+
     if (prefersReducedMotion()) {
-      cards.forEach((c) => c.classList.add('is-in'));
-      markLast();
+      cards.forEach(reveal);
       return;
     }
 
@@ -42,18 +47,33 @@ export default function Agencies({
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target); // una sola vez: no reaparece al subir
-          if (entry.target === last) markLast();
+          reveal(entry.target as HTMLElement);
+          io.unobserve(entry.target);
         }
       },
-      // Pide que la tarjeta esté bien entrada en pantalla: así se revela una
-      // por vez en lugar de dispararse todas apenas asoma el borde.
-      { threshold: 0.45, rootMargin: '0px 0px -18% 0px' }
+      // Las tarjetas ahora son cortas: un umbral alto las deja pegadas al
+      // fondo de la pantalla y nunca disparan el cierre.
+      { threshold: 0.15, rootMargin: '0px 0px -6% 0px' }
     );
 
     cards.forEach((c) => io.observe(c));
-    return () => io.disconnect();
+
+    // Red de seguridad: si la última ya está cerca del borde inferior,
+    // entra igual y libera el RSVP.
+    const ioEnd = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        reveal(last);
+        ioEnd.disconnect();
+      },
+      { threshold: 0, rootMargin: '0px 0px 45% 0px' }
+    );
+    ioEnd.observe(last);
+
+    return () => {
+      io.disconnect();
+      ioEnd.disconnect();
+    };
   }, [visible, onLastVisible]);
 
   return (
